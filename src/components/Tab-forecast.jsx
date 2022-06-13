@@ -1,24 +1,29 @@
+import {getCelsius, getDate, getTime} from "../utils";
 
-function TabForecast() {
+function TabForecast({data}) {
     return (
         <div className="weather__tab tab-forecast">
             <div className="weather__tab-container weather__tab-container_forecast">
-                <h2 className="header header_forecast">
-                    Aktobe
-                </h2>
-                <ListForecast />
+                <h2 className="header header_forecast">{data.city?.name}</h2>
+                <ListForecast data={data} />
             </div>
         </div>
     )
 }
 
-function ListForecast() {
+function ListForecast({data}) {
+    const list = data.list?.map((item, index) =>
+        <ListItemForecast key={index}
+                          date={getDate(item.dt_txt)}
+                          time={getTime(item.dt)}
+                          temp={getCelsius(item.main?.temp)}
+                          feelTemp={getCelsius(item.main?.feels_like)}
+                          weather={(item.weather ?? {})[0]?.main}/>
+    );
+
     return (
         <ul className="tab-forecast__list">
-            <ListItemForecast date={'17 May'} time={'15:00'} temp={13} feelTemp={10} weather={'Sun'}/>
-            <ListItemForecast date={'17 May'} time={'18:00'} temp={12} feelTemp={10} weather={'Rain'}/>
-            <ListItemForecast date={'17 May'} time={'21:00'} temp={10} feelTemp={8} weather={'Rain'}/>
-            <ListItemForecast date={'17 May'} time={'0:00'} temp={5} feelTemp={0} weather={'Rain'}/>
+            {list}
         </ul>
     )
 }

@@ -1,49 +1,35 @@
 
-function Locations() {
+function Locations({locations, showWeather, removeFavorite}) {
     return (
         <div className="weather__locations">
             <h2 className="header header_locations">
                 Added Locations:
             </h2>
-            <ul className="weather__locations-list">
-                <li className="weather__locations-list-item flex">
-                    <button className="weather__locations-favorite-btn">
-                        Amur
-                    </button>
-                    <button className="weather__location-del"></button>
-                </li>
-                <li className="weather__locations-list-item flex">
-                    <button className="weather__locations-favorite-btn">
-                        Samara
-                    </button>
-                    <button className="weather__location-del"></button>
-                </li>
-                <li className="weather__locations-list-item flex">
-                    <button className="weather__locations-favorite-btn">
-                        Bali
-                    </button>
-                    <button className="weather__location-del"></button>
-                </li>
-                <li className="weather__locations-list-item flex">
-                    <button className="weather__locations-favorite-btn">
-                        Dane
-                    </button>
-                    <button className="weather__location-del"></button>
-                </li>
-                <li className="weather__locations-list-item flex">
-                    <button className="weather__locations-favorite-btn">
-                        Kilo
-                    </button>
-                    <button className="weather__location-del"></button>
-                </li>
-                <li className="weather__locations-list-item flex">
-                    <button className="weather__locations-favorite-btn">
-                        Nur-Sultan
-                    </button>
-                    <button className="weather__location-del"></button>
-                </li>
-            </ul>
+            <LocationsList locations={locations} showWeather={showWeather} removeFavorite={removeFavorite} />
         </div>
+    )
+}
+
+function LocationsList({locations, showWeather, removeFavorite}) {
+    const list = locations.map((item, index) =>
+        <LocationsItem key={index} name={item} showWeather={showWeather} removeFavorite={removeFavorite}/>
+    );
+
+    return (
+        <ul className="weather__locations-list">
+            {list}
+        </ul>
+    )
+}
+
+function LocationsItem({name, showWeather, removeFavorite}) {
+    return (
+        <li className="weather__locations-list-item flex">
+            <button className="weather__locations-favorite-btn" onClick={() => showWeather(name)}>
+                {name}
+            </button>
+            <button className="weather__location-del" onClick={() => removeFavorite(name)}></button>
+        </li>
     )
 }
 

@@ -1,5 +1,10 @@
 import { format } from "date-fns";
 
+const STORAGE = {
+    FAVORITE_LIST: 'favoriteList',
+    CURRENT_CITY: 'currentCity'
+}
+
 function getCelsius(temp) {
     return Math.round(temp - 273.15);
 }
@@ -20,4 +25,20 @@ function getDate(time) {
     return format(date, "LLLL d");
 }
 
-export {getCelsius, getDate, getTime};
+function getStorageData(storage) {
+    const jsonData = localStorage.getItem(storage);
+
+    try {
+        return JSON.parse(jsonData);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function setStorageData(storage, data) {
+    const jsonData = JSON.stringify(data);
+
+    localStorage.setItem(storage, jsonData);
+}
+
+export {getCelsius, getDate, getTime, getStorageData, setStorageData, STORAGE};
