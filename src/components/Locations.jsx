@@ -11,7 +11,7 @@ function Locations({locations, showWeather, removeFavorite}) {
 }
 
 function LocationsList({locations, showWeather, removeFavorite}) {
-    const list = locations.map((item, index) =>
+    const list = locations?.map((item, index) =>
         <LocationsItem key={index} name={item} showWeather={showWeather} removeFavorite={removeFavorite}/>
     );
 

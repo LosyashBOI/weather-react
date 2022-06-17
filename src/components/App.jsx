@@ -6,8 +6,8 @@ import Tabs from "./Tabs";
 import {getStorageData, setStorageData, STORAGE} from "../utils";
 
 const defaultLocations = ['Moscow', 'Los Angeles', 'New York', 'Kyiv', 'Tokyo', 'Berlin'];
-const storageCity = getStorageData(STORAGE.CURRENT_CITY);
-const storageFavoriteList = getStorageData(STORAGE.FAVORITE_LIST);
+const storageCity = getStorageData(STORAGE.CURRENT_CITY) ?? 'Moscow';
+const storageFavoriteList = getStorageData(STORAGE.FAVORITE_LIST) ?? defaultLocations;
 
 function App() {
   return (
@@ -19,8 +19,8 @@ function Weather() {
     const [valueInput, setValue] = useState('');
     const [dataMain, setDataMain] = useState({});
     const [dataForecast, setDataForecast] = useState({});
-    const [favoriteList, setFavoriteList] = useState(defaultLocations);
-    const [currentCity, setCurrentCity] = useState('Moscow');
+    const [favoriteList, setFavoriteList] = useState([]);
+    const [currentCity, setCurrentCity] = useState('');
 
     useEffect(() => {
         showWeather(storageCity);
@@ -81,17 +81,16 @@ function Weather() {
 
     return (
       <div className={'weather'}>
-        <div className={'weather__container'}>
-          <Form onChange={setValue} cityName={valueInput} submit={handleSubmit} />
-          <div className="weather__main flex">
-              <Tabs dataMain={dataMain} dataForecast={dataForecast} onFavorite={addFavorite} />
-              <Locations locations={favoriteList} showWeather={showWeather} removeFavorite={removeFavorite}/>
+          {/*<button onClick={() => localStorage.clear()}>Clear</button>*/}
+          <div className={'weather__container'}>
+            <Form onChange={setValue} cityName={valueInput} submit={handleSubmit} />
+            <div className="weather__main flex">
+                <Tabs dataMain={dataMain} dataForecast={dataForecast} onFavorite={addFavorite} />
+                <Locations locations={favoriteList} showWeather={showWeather} removeFavorite={removeFavorite}/>
+            </div>
           </div>
-        </div>
       </div>
     )
 }
-
-
 
 export default App
