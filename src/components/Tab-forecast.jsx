@@ -1,6 +1,9 @@
 import {getCelsius, getDate, getTime} from "../utils";
+import {useSelector} from "react-redux";
 
-function TabForecast({data}) {
+function TabForecast() {
+    const data = useSelector(state => state.forecast);
+
     return (
         <div className="weather__tab tab-forecast">
             <div className="weather__tab-container weather__tab-container_forecast">

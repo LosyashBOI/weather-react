@@ -1,39 +1,44 @@
-import {useEffect, useState} from 'react'
+import {useEffect} from 'react'
 import Form from "./Form";
 import Locations from "./Locations";
 import {API, weatherData} from "../api";
 import Tabs from "./Tabs";
 import {getStorageData, setStorageData, STORAGE} from "../utils";
+import {createStore} from "redux";
+import weatherApp from "../reducers";
+import {Provider, useDispatch} from "react-redux";
+import {getForecast, getMain} from "../actions";
+import {Link} from "react-router-dom";
 
-const defaultLocations = ['Moscow', 'Los Angeles', 'New York', 'Kyiv', 'Tokyo', 'Berlin'];
-const storageCity = getStorageData(STORAGE.CURRENT_CITY) ?? 'Moscow';
+const defaultLocations = ['Los Angeles', 'New York', 'Kyiv', 'Tokyo', 'Berlin'];
+const defaultCity = 'Moscow';
+
+const storageCity = getStorageData(STORAGE.CURRENT_CITY) ?? defaultCity;
 const storageFavoriteList = getStorageData(STORAGE.FAVORITE_LIST) ?? defaultLocations;
 
+const storage = {
+    list: storageFavoriteList
+}
+
+const store = createStore(weatherApp, storage);
+
+console.log(store.getState());
+
+
 function App() {
-  return (
-      <Weather />
-  )
+    return (
+        <Provider store={store}>
+            <Weather/>
+        </Provider>
+    )
 }
 
 function Weather() {
-    const [valueInput, setValue] = useState('');
-    const [dataMain, setDataMain] = useState({});
-    const [dataForecast, setDataForecast] = useState({});
-    const [favoriteList, setFavoriteList] = useState([]);
-    const [currentCity, setCurrentCity] = useState('');
+    const dispatch = useDispatch();
 
     useEffect(() => {
         showWeather(storageCity);
-        setFavoriteList(storageFavoriteList);
     }, []);
-
-    useEffect(() => {
-        setStorageData(STORAGE.CURRENT_CITY, currentCity);
-    }, [currentCity]);
-
-    useEffect(() => {
-        setStorageData(STORAGE.FAVORITE_LIST, favoriteList);
-    }, [favoriteList]);
 
     async function showWeather(city) {
         try {
@@ -45,51 +50,28 @@ function Weather() {
                 return;
             }
 
-            setCurrentCity(city);
-            setDataMain(responseMain);
-            setDataForecast(responseForecast);
+            setStorageData(STORAGE.CURRENT_CITY, city);
+
+            dispatch(getMain(responseMain));
+            dispatch(getForecast(responseForecast));
             // console.log(responseMain);
         } catch (e) {
             console.log(e)
         }
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
-
-        if (!valueInput.trim()) return;
-
-        showWeather(valueInput)
-
-        setValue('');
-    }
-
-    function addFavorite() {
-        const city = dataMain.name;
-        const isFavorite = favoriteList.includes(city);
-
-        if (!city || isFavorite) return;
-
-        setFavoriteList([city, ...favoriteList]);
-    }
-
-    function removeFavorite(city) {
-        const filteredList = favoriteList.filter(item => item !== city);
-
-        setFavoriteList(filteredList);
-    }
-
     return (
-      <div className={'weather'}>
-          {/*<button onClick={() => localStorage.clear()}>Clear</button>*/}
-          <div className={'weather__container'}>
-            <Form onChange={setValue} cityName={valueInput} submit={handleSubmit} />
-            <div className="weather__main flex">
-                <Tabs dataMain={dataMain} dataForecast={dataForecast} onFavorite={addFavorite} />
-                <Locations locations={favoriteList} showWeather={showWeather} removeFavorite={removeFavorite}/>
+        <div className={'weather'}>
+            {/*<button onClick={() => localStorage.clear()}>Clear</button>*/}
+                <Link className={"weather__link"} to="/Help">Help</Link>
+            <div className={'weather__container'}>
+                <Form showWeather={showWeather}/>
+                <div className="weather__main flex">
+                    <Tabs/>
+                    <Locations showWeather={showWeather}/>
+                </div>
             </div>
-          </div>
-      </div>
+        </div>
     )
 }
 
