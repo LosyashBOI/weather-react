@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 function Help() {
     return (
         <div className={'weather'}>
-            <Link className={"weather__link"} to="/">Back</Link>
+            <Link className={"weather__link"} to="/weather-app/">Back</Link>
             <div className={'weather__container'}>
                 <div className="weather__main help flex">
                     <h2 className={"help__header"}>

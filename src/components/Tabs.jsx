@@ -1,14 +1,25 @@
 import TabNow from "./Tab-now";
 import TabDetails from "./Tab-details";
 import TabForecast from "./Tab-forecast";
+import {useSelector} from "react-redux";
+
+const errorStyle = {
+    paddingLeft: '15px',
+    alignSelf: 'center',
+    fontSize: '40px',
+}
 
 function Tabs() {
+    const error = useSelector(state => state.forecast.error);
+
     return (
         <div className="weather__tabs flex">
             <Wrapper/>
-            <TabNow/>
-            <TabDetails/>
-            <TabForecast/>
+            {error ? <h2 style={errorStyle}>{error}</h2> : <><TabNow/>
+                <TabDetails/>
+                <TabForecast/></>
+            }
+
         </div>
     )
 }

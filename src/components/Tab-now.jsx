@@ -1,9 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
-import {addCity} from "../actions";
+import {addCity} from "../redux/favoriteList";
 import {getCelsius} from "../utils";
 
 function TabNow() {
-    const {temp, name} = useSelector(state => state.main);
+    const data = useSelector(state => state.main.data);
+
+    if (!data) return;
+    // console.log(state);
+    const {temp, name} = data;
     const dispatch = useDispatch()
 
     const addFavorite = (city) => {

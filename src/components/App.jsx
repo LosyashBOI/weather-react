@@ -1,34 +1,21 @@
 import {useEffect} from 'react'
 import Form from "./Form";
 import Locations from "./Locations";
-import {API, weatherData} from "../api";
 import Tabs from "./Tabs";
 import {getStorageData, setStorageData, STORAGE} from "../utils";
-import {createStore} from "redux";
-import weatherApp from "../reducers";
 import {Provider, useDispatch} from "react-redux";
-import {getForecast, getMain} from "../actions";
-import {Link} from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
+import fetchMainData from "../redux/mainData";
+import fetchForecastData, {setCity} from "../redux/forecastData";
+import store from "../redux/store";
 
-const defaultLocations = ['Los Angeles', 'New York', 'Kyiv', 'Tokyo', 'Berlin'];
 const defaultCity = 'Moscow';
-
 const storageCity = getStorageData(STORAGE.CURRENT_CITY) ?? defaultCity;
-const storageFavoriteList = getStorageData(STORAGE.FAVORITE_LIST) ?? defaultLocations;
-
-const storage = {
-    list: storageFavoriteList
-}
-
-const store = createStore(weatherApp, storage);
-
-console.log(store.getState());
-
 
 function App() {
     return (
         <Provider store={store}>
-            <Weather/>
+            <Outlet />
         </Provider>
     )
 }
@@ -38,41 +25,31 @@ function Weather() {
 
     useEffect(() => {
         showWeather(storageCity);
+        // console.log('useEffect');
     }, []);
 
-    async function showWeather(city) {
-        try {
-            const responseMain = await weatherData(API.URL_MAIN, city);
-            const responseForecast = await weatherData(API.URL_FORECAST, city);
+    function showWeather(city) {
+        setStorageData(STORAGE.CURRENT_CITY, city);
 
-            if (!responseMain.name) {
-                alert(`Error: ${responseMain.message}`);
-                return;
-            }
-
-            setStorageData(STORAGE.CURRENT_CITY, city);
-
-            dispatch(getMain(responseMain));
-            dispatch(getForecast(responseForecast));
-            // console.log(responseMain);
-        } catch (e) {
-            console.log(e)
-        }
+        dispatch(fetchMainData(city));
+        dispatch(fetchForecastData(city));
+        // dispatch(setCity(city));
+        // console.log(city);
     }
 
     return (
         <div className={'weather'}>
             {/*<button onClick={() => localStorage.clear()}>Clear</button>*/}
-                <Link className={"weather__link"} to="/Help">Help</Link>
+            <Link className={"weather__link"} to="help">Help</Link>
             <div className={'weather__container'}>
-                <Form showWeather={showWeather}/>
+                <Form showWeather={showWeather} />
                 <div className="weather__main flex">
-                    <Tabs/>
-                    <Locations showWeather={showWeather}/>
+                    <Tabs />
+                    <Locations showWeather={showWeather} />
                 </div>
             </div>
         </div>
     )
 }
 
-export default App
+export { App, Weather };

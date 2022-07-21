@@ -2,7 +2,10 @@ import {useSelector} from "react-redux";
 import {getCelsius, getTime} from "../utils";
 
 function TabDetails() {
-    const {name, temp, feelsLike, weather, sunrise, sunset} = useSelector(state => state.main);
+    const data = useSelector(state => state.main.data);
+
+    if (!data) return;
+    const {name, temp, feelsLike, weather, sunrise, sunset} = data
 
     return (
         <div className="weather__tab tab-details">

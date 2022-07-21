@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {removeCity} from "../actions";
+import {removeCity} from "../redux/favoriteList";
 import {setStorageData, STORAGE} from "../utils";
 
 function Locations({showWeather}) {
@@ -8,18 +8,18 @@ function Locations({showWeather}) {
             <h2 className="header header_locations">
                 Added Locations:
             </h2>
-            <LocationsList showWeather={showWeather}/>
+            <LocationsList showWeather={showWeather} />
         </div>
     )
 }
 
 function LocationsList({showWeather}) {
-    const state = useSelector((state) => state);
-    const list = state.list.map((item, index) =>
-        <LocationsItem key={index} name={item} showWeather={showWeather}/>
+    const state = useSelector((state) => state.list.items);
+    const list = state.map((item, index) =>
+        <LocationsItem key={index} name={item} showWeather={showWeather} />
     );
 
-    setStorageData(STORAGE.FAVORITE_LIST, state.list);
+    setStorageData(STORAGE.FAVORITE_LIST, state);
 
     return (
         <ul className="weather__locations-list">
@@ -31,13 +31,17 @@ function LocationsList({showWeather}) {
 function LocationsItem({name, showWeather}) {
     const dispatch = useDispatch();
 
+    const handleClick = (city) => {
+        showWeather(city);
+    }
+
     const handleRemove = (city) => {
         dispatch(removeCity(city))
     }
 
     return (
         <li className="weather__locations-list-item flex">
-            <button className="weather__locations-favorite-btn" onClick={() => showWeather(name)}>
+            <button className="weather__locations-favorite-btn" onClick={() => handleClick(name)}>
                 {name}
             </button>
             <button className="weather__location-del" onClick={() => handleRemove(name)}></button>

@@ -3,11 +3,12 @@ import {useSelector} from "react-redux";
 
 function TabForecast() {
     const data = useSelector(state => state.forecast);
+    // console.log(data);
 
     return (
         <div className="weather__tab tab-forecast">
             <div className="weather__tab-container weather__tab-container_forecast">
-                <h2 className="header header_forecast">{data.city?.name}</h2>
+                <h2 className="header header_forecast">{data.city}</h2>
                 <ListForecast data={data} />
             </div>
         </div>
@@ -15,13 +16,13 @@ function TabForecast() {
 }
 
 function ListForecast({data}) {
-    const list = data.list?.map((item, index) =>
+    const list = data.items.map((item, index) =>
         <ListItemForecast key={index}
-                          date={getDate(item.dt_txt)}
-                          time={getTime(item.dt)}
-                          temp={getCelsius(item.main?.temp)}
-                          feelTemp={getCelsius(item.main?.feels_like)}
-                          weather={(item.weather ?? {})[0]?.main}/>
+                          date={getDate(item?.date)}
+                          time={getTime(item?.time)}
+                          temp={getCelsius(item?.temp)}
+                          feelTemp={getCelsius(item?.feelsLike)}
+                          weather={item?.weather}/>
     );
 
     return (
